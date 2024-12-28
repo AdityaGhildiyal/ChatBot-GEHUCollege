@@ -6,8 +6,10 @@ import { Send, Expand, Minimize, ChevronDown } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { TypingAnimation } from './TypingAnimation'
+import { useTheme } from './ThemeProvider'
 
 export function ChatArea() {
+  const { theme } = useTheme()
   const [chatbotType, setChatbotType] = useState<'gemini' | 'gehu'>('gemini')
   const { messages, input, handleInputChange, handleSubmit: handleGeminiSubmit, isLoading } = useChat()
   const [isExpanded, setIsExpanded] = useState(false)
@@ -94,56 +96,54 @@ export function ChatArea() {
   return (
     <motion.div 
       ref={chatContainerRef}
-      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl px-4 pb-4"
+      className={`fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-4xl px-4 pb-4`}
       initial={{ height: '400px' }}
       animate={{ height: isExpanded ? '80vh' : '400px' }}
       transition={{ type: "spring", stiffness: 75, damping: 15 }}
     >
       <motion.div
-        className="bg-[#1E1E1E] rounded-2xl overflow-hidden shadow-xl relative h-full"
+        className={`${theme === 'dark' ? 'bg-[#1E1E1E]' : 'bg-white'} rounded-2xl overflow-hidden shadow-xl relative h-full`}
       >
         {/* Expand/Minimize Button */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="absolute top-4 right-4 p-2 rounded-lg bg-[#2B2B2B] hover:bg-[#363636] transition-colors z-10"
+          className={`absolute top-4 right-4 p-2 rounded-lg ${
+            theme === 'dark'
+              ? 'bg-[#2B2B2B] hover:bg-[#363636]'
+              : 'bg-gray-200 hover:bg-gray-300'
+          } transition-colors z-10`}
         >
           {isExpanded ? (
-            <Minimize className="w-5 h-5" />
+            <Minimize className={`w-5 h-5 ${theme === 'dark' ? 'text-white' : 'text-black'}`} />
           ) : (
-            <Expand className="w-5 h-5" />
+            <Expand className={`w-5 h-5 ${theme === 'dark' ? 'text-white' : 'text-black'}`} />
           )}
         </button>
 
         <div className="h-full flex flex-col">
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.div 
-                className="bg-[#252525] p-4 border-b border-gray-700 flex justify-between items-center"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
+          <div className={`${theme === 'dark' ? 'bg-[#252525]' : 'bg-gray-100'} p-4 border-b ${theme === 'dark' ? 'border-gray-700' : 'border-gray-200'} flex justify-between items-center`}>
+            <div className="relative">
+              <select
+                value={chatbotType}
+                onChange={(e) => setChatbotType(e.target.value as 'gemini' | 'gehu')}
+                className={`appearance-none ${
+                  theme === 'dark'
+                    ? 'bg-[#363636] text-white'
+                    : 'bg-white text-black border border-gray-300'
+                } py-2 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600`}
               >
-                <h2 className="text-xl font-semibold text-white">Chat with AI Advisor</h2>
-                <div className="relative">
-                  <select
-                    value={chatbotType}
-                    onChange={(e) => setChatbotType(e.target.value as 'gemini' | 'gehu')}
-                    className="appearance-none bg-[#363636] text-white py-2 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600"
-                  >
-                    <option value="gemini">Gemini chatbot</option>
-                    <option value="gehu">GEHU chatbot</option>
-                  </select>
-                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white pointer-events-none" />
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+                <option value="gemini">Gemini chatbot</option>
+                <option value="gehu">GEHU chatbot</option>
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white pointer-events-none" />
+            </div>
+          </div>
 
           <div className="flex-grow overflow-auto p-6 space-y-4">
             {currentMessages.map((message, i) => (
               <div key={i} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} items-start gap-3`}>
                 {message.role !== 'user' && (
-                  <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center">
+                  <div className={`w-8 h-8 rounded-full ${theme === 'dark' ? 'bg-purple-600' : 'bg-blue-500'} flex items-center justify-center`}>
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                     </svg>
@@ -151,11 +151,11 @@ export function ChatArea() {
                 )}
                 <div className={`max-w-[80%] p-3 rounded-xl ${
                   message.role === 'user' 
-                    ? 'bg-[#2B2B2B]' 
-                    : 'bg-[#252525]'
+                    ? theme === 'dark' ? 'bg-[#2B2B2B]' : 'bg-blue-100'
+                    : theme === 'dark' ? 'bg-[#252525]' : 'bg-gray-200'
                 }`}>
                   {message.content}
-                  <div className="text-xs text-gray-500 mt-1">
+                  <div className={`text-xs ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'} mt-1`}>
                     {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </div>
                 </div>
@@ -187,7 +187,7 @@ export function ChatArea() {
             <div ref={messagesEndRef} />
           </div>
           
-          <div className="p-4 bg-[#1E1E1E] flex justify-center items-center">
+          <div className={`p-4 ${theme === 'dark' ? 'bg-[#1E1E1E]' : 'bg-white'} flex justify-center items-center`}>
             <form onSubmit={onSubmit} className="relative flex items-center w-full max-w-3xl">
               <textarea
                 value={currentInput}
@@ -203,13 +203,13 @@ export function ChatArea() {
                   resetInactivityTimer();
                 }}
                 placeholder="Write a message..."
-                className="flex-grow bg-[#141414] rounded-xl py-3 px-4 text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-700 resize-none"
+                className={`flex-grow ${theme === 'dark' ? 'bg-[#141414] text-white placeholder-gray-500' : 'bg-gray-100 text-gray-900 placeholder-gray-500'} rounded-xl py-3 px-4 focus:outline-none focus:ring-1 ${theme === 'dark' ? 'focus:ring-gray-700' : 'focus:ring-blue-500'} resize-none`}
                 style={{ height: '50px' }}
               />
               <button
                 type="submit"
                 disabled={currentIsLoading}
-                className="ml-2 bg-[#F4C8B5] text-black px-4 py-2 rounded-lg font-medium hover:bg-[#FADACF] transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                className={`ml-2 ${theme === 'dark' ? 'bg-[#F4C8B5] text-black hover:bg-[#FADACF]' : 'bg-blue-500 text-white hover:bg-blue-600'} px-4 py-2 rounded-lg font-medium transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed`}
               >
                 <Send className="w-4 h-4" />
                 <span className="ml-2">Send</span>

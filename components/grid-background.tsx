@@ -1,9 +1,11 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import { useTheme } from './ThemeProvider'
 
 export function GridBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { theme } = useTheme()
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -26,7 +28,7 @@ export function GridBackground() {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        speed: 0.05 + Math.random() * 0.1, 
+        speed: 0.05 + Math.random() * 0.1, // Reduced from 0.1 + Math.random() * 0.2
         size: 1 + Math.random() * 1
       })
     }
@@ -37,7 +39,7 @@ export function GridBackground() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       // Draw grid lines with larger spacing
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)'
+      ctx.strokeStyle = theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'
       ctx.lineWidth = 0.5
 
       const gridSize = 80 // Increased grid size
@@ -45,8 +47,8 @@ export function GridBackground() {
       // Draw dots at intersections
       for (let x = 0; x < canvas.width; x += gridSize) {
         for (let y = 0; y < canvas.height; y += gridSize) {
-          const opacity = 0.03 + Math.random() * 0.05
-          ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`
+          const opacity = theme === 'dark' ? 0.03 + Math.random() * 0.05 : 0.1 + Math.random() * 0.1
+          ctx.fillStyle = theme === 'dark' ? `rgba(255, 255, 255, ${opacity})` : `rgba(0, 0, 0, ${opacity})`
           ctx.fillRect(x, y, 1, 1)
         }
       }
@@ -77,7 +79,7 @@ export function GridBackground() {
 
         ctx.beginPath()
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)' // Reduced from 0.6
+        ctx.fillStyle = theme === 'dark' ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.4)'
         ctx.fill()
       })
 
@@ -95,7 +97,7 @@ export function GridBackground() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 w-full h-full pointer-events-none"
-      style={{ background: 'linear-gradient(to bottom, #1E1E1E, #141414)' }}
+      style={{ background: theme === 'dark' ? 'linear-gradient(to bottom, #1E1E1E, #141414)' : 'white' }}
     />
   )
 }

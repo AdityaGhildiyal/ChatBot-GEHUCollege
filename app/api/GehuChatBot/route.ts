@@ -5,7 +5,6 @@ interface ChatResponse {
   content: string;
 }
 
-// Predefined keyword categories for different topics
 const KEYWORDS = {
   initial: ['hi', 'hello', 'hey', 'start', 'help', 'welcome'],
   admissions: ['admission', 'admissions', 'apply', 'eligibility', 'application', 'entrance', 'enroll', 'registration'],
