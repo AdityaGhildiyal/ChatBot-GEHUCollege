@@ -1,8 +1,6 @@
-'use client'
-
-import { ThemeProvider } from '@/components/ThemeProvider'
 import './globals.css'
 import { Inter } from 'next/font/google'
+import ClientOnlyLayout from '@/components/ClientOnlyLayout' 
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,9 +12,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider>{children}</ThemeProvider>
+        <ClientOnlyLayout>{children}</ClientOnlyLayout>
       </body>
     </html>
   )
 }
-

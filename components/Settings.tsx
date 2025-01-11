@@ -1,3 +1,6 @@
+'use client'
+
+import { useState } from 'react'
 import { X } from 'lucide-react'
 import { useTheme } from './ThemeProvider'
 
@@ -7,6 +10,19 @@ interface SettingsProps {
 
 export function Settings({ onClose }: SettingsProps) {
   const { theme, setTheme } = useTheme()
+  
+  // State for the settings form
+  const [selectedTheme, setSelectedTheme] = useState<'light' | 'dark'>(theme)
+  const [selectedLanguage, setSelectedLanguage] = useState<string>('English')
+  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(true)
+
+  // Function to handle saving the settings
+  const handleSaveChanges = () => {
+    setTheme(selectedTheme)  // Update the global theme using the provided setTheme function
+    // Here, you could also save other settings like language or notifications to a backend or local storage.
+    console.log('Settings saved:', { selectedTheme, selectedLanguage, notificationsEnabled })
+    onClose() // Close the settings modal after saving
+  }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -24,8 +40,8 @@ export function Settings({ onClose }: SettingsProps) {
             </label>
             <select 
               className={`w-full ${theme === 'dark' ? 'bg-[#363636] text-white' : 'bg-gray-100 text-gray-900'} rounded p-2`}
-              value={theme}
-              onChange={(e) => setTheme(e.target.value as 'light' | 'dark')}
+              value={selectedTheme}
+              onChange={(e) => setSelectedTheme(e.target.value as 'light' | 'dark')}
             >
               <option value="dark">Dark</option>
               <option value="light">Light</option>
@@ -35,10 +51,14 @@ export function Settings({ onClose }: SettingsProps) {
             <label className={`block text-sm font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-700'} mb-1`}>
               Language
             </label>
-            <select className={`w-full ${theme === 'dark' ? 'bg-[#363636] text-white' : 'bg-gray-100 text-gray-900'} rounded p-2`}>
-              <option>English</option>
-              <option>Spanish</option>
-              <option>French</option>
+            <select 
+              className={`w-full ${theme === 'dark' ? 'bg-[#363636] text-white' : 'bg-gray-100 text-gray-900'} rounded p-2`}
+              value={selectedLanguage}
+              onChange={(e) => setSelectedLanguage(e.target.value)}
+            >
+              <option value="English">English</option>
+              <option value="Spanish">Spanish</option>
+              <option value="French">French</option>
             </select>
           </div>
           <div>
@@ -46,16 +66,23 @@ export function Settings({ onClose }: SettingsProps) {
               Notifications
             </label>
             <div className="flex items-center">
-              <input type="checkbox" className="mr-2" />
+              <input 
+                type="checkbox" 
+                checked={notificationsEnabled}
+                onChange={(e) => setNotificationsEnabled(e.target.checked)}
+                className="mr-2"
+              />
               <span className={`${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>Enable notifications</span>
             </div>
           </div>
         </div>
-        <button className={`mt-6 w-full ${theme === 'dark' ? 'bg-[#F4C8B5] text-black hover:bg-[#FADACF]' : 'bg-blue-500 text-white hover:bg-blue-600'} py-2 rounded-lg font-medium transition-colors`}>
+        <button
+          onClick={handleSaveChanges}
+          className={`mt-6 w-full ${theme === 'dark' ? 'bg-[#F4C8B5] text-black hover:bg-[#FADACF]' : 'bg-blue-500 text-white hover:bg-blue-600'} py-2 rounded-lg font-medium transition-colors`}
+        >
           Save Changes
         </button>
       </div>
     </div>
   )
 }
-

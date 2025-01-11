@@ -28,7 +28,7 @@ export function GridBackground() {
       particles.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        speed: 0.05 + Math.random() * 0.1, // Reduced from 0.1 + Math.random() * 0.2
+        speed: 0.05 + Math.random() * 0.1, 
         size: 1 + Math.random() * 1
       })
     }
@@ -38,13 +38,11 @@ export function GridBackground() {
 
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Draw grid lines with larger spacing
       ctx.strokeStyle = theme === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'
       ctx.lineWidth = 0.5
 
-      const gridSize = 80 // Increased grid size
+      const gridSize = 80 
 
-      // Draw dots at intersections
       for (let x = 0; x < canvas.width; x += gridSize) {
         for (let y = 0; y < canvas.height; y += gridSize) {
           const opacity = theme === 'dark' ? 0.03 + Math.random() * 0.05 : 0.1 + Math.random() * 0.1
@@ -53,7 +51,6 @@ export function GridBackground() {
         }
       }
 
-      // Draw vertical lines
       for (let x = 0; x < canvas.width; x += gridSize) {
         ctx.beginPath()
         ctx.moveTo(x, 0)
@@ -61,7 +58,6 @@ export function GridBackground() {
         ctx.stroke()
       }
 
-      // Draw horizontal lines
       for (let y = 0; y < canvas.height; y += gridSize) {
         ctx.beginPath()
         ctx.moveTo(0, y)
@@ -69,7 +65,6 @@ export function GridBackground() {
         ctx.stroke()
       }
 
-      // Update and draw particles
       particles.forEach(particle => {
         particle.y -= particle.speed
         if (particle.y < 0) {
@@ -91,7 +86,7 @@ export function GridBackground() {
     return () => {
       window.removeEventListener('resize', setCanvasSize)
     }
-  }, [])
+  }, [theme]) 
 
   return (
     <canvas

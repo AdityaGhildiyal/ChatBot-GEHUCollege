@@ -2,14 +2,21 @@ import mongoose, { Connection } from 'mongoose';
 
 const { MONGODB_URI } = process.env;
 
-export const connectDB = async (): Promise<Connection> => {
+if (!MONGODB_URI) {
+  throw new Error("Please define the MONGODB_URI environment variable in your .env file");
+}
+
+export const connectToDatabase = async (): Promise<Connection> => {
   if (mongoose.connection.readyState >= 1) {
+    console.log("Using existing MongoDB connection");
     return mongoose.connection;
   }
 
   try {
-    await mongoose.connect(MONGODB_URI!);
-    console.log("Connected to MongoDB");
+    await mongoose.connect(MONGODB_URI, {
+      dbName: "UserChatBot", 
+    });
+    console.log("Connected to MongoDB: UserChatBot");
 
     mongoose.connection.on("connected", () => {
       console.log("Mongoose connected to MongoDB");
@@ -34,6 +41,6 @@ export const connectDB = async (): Promise<Connection> => {
     if (error instanceof Error) {
       console.error("Error connecting to MongoDB:", error.message);
     }
-    throw error;  
+    throw error;
   }
 };

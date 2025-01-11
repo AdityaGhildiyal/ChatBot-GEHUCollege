@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { GridBackground } from '@/components/grid-background'
 import { ChatArea } from '@/components/ChatArea'
@@ -10,6 +10,10 @@ import { LogoutConfirmation } from '@/components/LogoutConfirmation'
 import { ChevronRight, ChevronLeft, User } from 'lucide-react'
 import Link from 'next/link'
 import { useTheme } from '@/components/ThemeProvider'
+import { useRouter } from 'next/navigation'
+import { useSession } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
+
 
 export default function ChatbotUI() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -17,9 +21,24 @@ export default function ChatbotUI() {
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const { theme } = useTheme()
+  const router = useRouter()
+  
+  const { data: session, status } = useSession()
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login')
+    }
+  }, [status, router])
+
+  const handleLogout = () => {
+    
+      signOut({ callbackUrl: '/login' }) 
+    
+  }
 
   return (
-  <div className={`relative flex h-screen overflow-hidden ${theme === 'dark' ? 'bg-[#1E1E1E] text-white' : 'bg-gray-100 text-gray-900'}`}>
+    <div className={`relative flex h-screen overflow-hidden ${theme === 'dark' ? 'bg-[#1E1E1E] text-white' : 'bg-gray-100 text-gray-900'}`}>
       <GridBackground />
       
       {/* Main Content */}
@@ -31,24 +50,26 @@ export default function ChatbotUI() {
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className={`w-10 h-10 rounded-full ${theme === 'dark' ? 'bg-[#363636]' : 'bg-gray-200'} flex items-center justify-center`}
             >
-              <User size={24} />
+              <img src="/placeholder.svg" alt="User" className="w-full h-full object-cover rounded-full" />
             </button>
             {isProfileOpen && (
               <div className={`absolute right-0 mt-2 w-64 ${theme === 'dark' ? 'bg-[#252525]' : 'bg-gray-100'} rounded-lg shadow-lg p-4`}>
                 <div className="text-center mb-4">
                   <div className={`w-20 h-20 rounded-full ${theme === 'dark' ? 'bg-[#363636]' : 'bg-gray-200'} mx-auto mb-2 flex items-center justify-center`}>
-                    <User size={40} />
+                    <img src="/placeholder.svg" alt="User" className="w-full h-full object-cover rounded-full" />
                   </div>
-                  <p className="text-lg font-semibold">Hello User</p>
+                  <p className="text-lg font-semibold">Hello {session?.user?.name || 'User'}</p>
                 </div>
                 <div className="space-y-2">
                   <button className={`w-full text-left px-2 py-1 hover:${theme === 'dark' ? 'bg-[#363636]' : 'bg-gray-200'} rounded`}>Add another account</button>
-                  <button className={`w-full text-left px-2 py-1 hover:${theme === 'dark' ? 'bg-[#363636]' : 'bg-gray-200'} rounded`}>Sign Out</button>
+                  <button onClick={handleLogout} className={`w-full text-left px-2 py-1 hover:${theme === 'dark' ? 'bg-[#363636]' : 'bg-gray-200'} rounded`}>Sign Out</button>
                 </div>
               </div>
-            )}
-          </div>
-        </div>
+           )}
+           </div>
+         </div>
+
+        
 
         {/* Social Media Links */}
         <div className="fixed left-8 bottom-8 flex flex-col gap-4 text-gray-500 z-10">
@@ -92,7 +113,7 @@ export default function ChatbotUI() {
               ? 'bg-gradient-to-r from-[#FADACF] via-[#F4C8B5] to-[#FADACF] bg-clip-text text-transparent'
               : 'text-black'
           }`}>
-            GEHU and AI Advisor
+            GEHU Advisor
           </h1>
           <p className={`${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'} max-w-lg mx-auto`}>
             Graphic Era Hill University has a lot to offer! Ask me about it...
