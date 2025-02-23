@@ -177,11 +177,11 @@ export default function Login() {
         </div>
 
         <p className={`mt-8 text-center text-sm ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-          Don't have an account?{' '}
-          <Link href="/signup" className={`font-medium ${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-500'}`}>
-            Sign up
-          </Link>
-        </p>
+  Don&apos;t have an account?{' '}
+  <Link href="/signup" className={`font-medium ${theme === 'dark' ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-500'}`}>
+    Sign up
+  </Link>
+</p>
       </motion.div>
     </div>
   );

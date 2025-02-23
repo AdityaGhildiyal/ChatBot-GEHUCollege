@@ -1,5 +1,5 @@
 'use client'
-
+import Image from "next/image";
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { GridBackground } from '@/components/grid-background'
@@ -50,13 +50,25 @@ export default function ChatbotUI() {
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className={`w-10 h-10 rounded-full ${theme === 'dark' ? 'bg-[#363636]' : 'bg-gray-200'} flex items-center justify-center`}
             >
-              <img src="/placeholder.svg" alt="User" className="w-full h-full object-cover rounded-full" />
+              <Image 
+  src="/placeholder.svg" 
+  alt="User" 
+  width={100}  
+  height={100} 
+  className="w-full h-full object-cover rounded-full" 
+/>
             </button>
             {isProfileOpen && (
               <div className={`absolute right-0 mt-2 w-64 ${theme === 'dark' ? 'bg-[#252525]' : 'bg-gray-100'} rounded-lg shadow-lg p-4`}>
                 <div className="text-center mb-4">
                   <div className={`w-20 h-20 rounded-full ${theme === 'dark' ? 'bg-[#363636]' : 'bg-gray-200'} mx-auto mb-2 flex items-center justify-center`}>
-                    <img src="/placeholder.svg" alt="User" className="w-full h-full object-cover rounded-full" />
+                  <Image 
+  src="/placeholder.svg" 
+  alt="User" 
+  width={100} 
+  height={100} 
+  className="w-full h-full object-cover rounded-full" 
+/>
                   </div>
                   <p className="text-lg font-semibold">Hello {session?.user?.name || 'User'}</p>
                 </div>
